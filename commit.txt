@@ -1,3 +1,5 @@
-Comit initial.
+#nom commit termine par un point exemple: "Machin chose."
 
-Interfaces et packages crees.
+#travail effectue
+
+#a faire
