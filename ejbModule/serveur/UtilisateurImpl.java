@@ -92,7 +92,21 @@ public class UtilisateurImpl implements Utilisateur, Serializable {
 
 	@override
 	public boolean Desinscription(String user, String pwd) {
+
+		MongoClient mongoClient;
+		try {
+			mongoClient = new MongoClient();
+			DB db = mongoClient.getDB("utilisateur_EJB");
+			DBCollection coll = db.getCollection("Personne");
+			// auth genere une exception lorsqu'elle echoue
+			coll.remove(authentification(user, pwd));
+			System.out.println("C fait");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return false;
+
 	}
 
 	@override

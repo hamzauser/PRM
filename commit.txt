@@ -1,6 +1,6 @@
-Authentification.
+Desinscription.
 
-Methode d'authentification d'un utilisateur implementee.
+Methode de desinscription d'un utilisateur implementee.
 
 A faire :
- - tests authentification utilisateur
+ - tests desinscription utilisateur
