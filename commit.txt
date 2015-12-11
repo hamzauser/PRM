@@ -1,6 +1,3 @@
-Recherche.
+Resolution persistence.
 
-Methode de recherche d'un utilisateur implementee.
-
-A faire :
- - tests recherche utilisateur
+Erreurs liees a la persistence resolues.
