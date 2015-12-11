@@ -1,6 +1,6 @@
-Desinscription.
+Recherche.
 
-Methode de desinscription d'un utilisateur implementee.
+Methode de recherche d'un utilisateur implementee.
 
 A faire :
- - tests desinscription utilisateur
+ - tests recherche utilisateur

@@ -111,6 +111,29 @@ public class UtilisateurImpl implements Utilisateur, Serializable {
 
 	@override
 	public boolean recherche(String user) {
+		MongoClient mongoClient;
+		try {
+			mongoClient = new MongoClient();
+			DB db = mongoClient.getDB("utilisateur_EJB");
+			DBCollection coll = db.getCollection("Personne");
+			DBCursor cursor = coll.find();
+			try {
+				while (cursor.hasNext()) {
+					DBObject h = cursor.next();
+					if (h.get("username").toString().equals(user)) {
+						System.out.println("Trouvé");
+						cursor.close();
+						return true;
+					}
+
+				}
+			} finally {
+				cursor.close();
+			}
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return false;
 	}
 
