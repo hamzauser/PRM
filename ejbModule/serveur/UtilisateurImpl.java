@@ -1,118 +1,77 @@
 package serveur;
 
-
 import java.io.Serializable;
+import java.net.UnknownHostException;
+
+import javax.persistence.Embeddable;
+
+import org.bson.types.ObjectId;
+import org.eclipse.persistence.nosql.annotations.DataFormatType;
+import org.eclipse.persistence.nosql.annotations.NoSql;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
+
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
 
 /**
  * @author hamza
  *
  */
-//@Entity
-public class UtilisateurImpl implements Utilisateur {
+@Embeddable
+@NoSql(dataFormat = DataFormatType.MAPPED)
+public class UtilisateurImpl implements Utilisateur, Serializable {
 
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
-	
-	public Personne user = new Personne();
-	
-	public boolean inscrire(Personne p){
-		//connexion bdd
-//		@Column( name = "")
-		
-		//requete d'ajout
+
+	// TODO
+	// creer une exception pour auth
+	// les tests formalises
+
+	@override
+	public boolean inscrire(Personne p) {
+		// connexion bdd
+		MongoClient client;
+		try {
+			client = new MongoClient();
+			Morphia morphia = new Morphia();
+			morphia.map(Personne.class);
+			Datastore ds = morphia.createDatastore(client, "utilisateur_EJB");
+			ds.ensureIndexes();
+			// public Personne(,String Adresse,String Telephone,String
+			// Email,ObjectId id){
+
+			// requete d'ajout
+			Personne u = new Personne(p.getusername(), p.getpwd(), p.getNom(), p.getPrenom(), p.getAdresse(),
+					p.getTelephone(), p.getEmail(), new ObjectId());
+			ds.save(u);
+			return true;
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return false;
 	}
-	
-	public class Personne implements Serializable {
-		/**
-		* 
-		*/
-		private static final long serialVersionUID = 1L;
 
-		public String Nom;
+	@override
+	public DBObject authentification(String user, String pwd) {
+		return null;
+	}
 
-		public String Prenom;
+	@override
+	public boolean Desinscription(String user, String pwd) {
+		return false;
+	}
 
-		public String Adresse;
-
-		public String Telephone;
-
-		public String Email;
-
-		/**
-		 * @return the nom
-		 */
-		public String getNom() {
-			return Nom;
-		}
-
-		/**
-		 * @param nom
-		 *            the nom to set
-		 */
-		public void setNom(String nom) {
-			Nom = nom;
-		}
-
-		/**
-		 * @return the prenom
-		 */
-		public String getPrenom() {
-			return Prenom;
-		}
-
-		/**
-		 * @param prenom
-		 *            the prenom to set
-		 */
-		public void setPrenom(String prenom) {
-			Prenom = prenom;
-		}
-
-		/**
-		 * @return the adresse
-		 */
-		public String getAdresse() {
-			return Adresse;
-		}
-
-		/**
-		 * @param adresse
-		 *            the adresse to set
-		 */
-		public void setAdresse(String adresse) {
-			Adresse = adresse;
-		}
-
-		/**
-		 * @return the telephone
-		 */
-		public String getTelephone() {
-			return Telephone;
-		}
-
-		/**
-		 * @param telephone
-		 *            the telephone to set
-		 */
-		public void setTelephone(String telephone) {
-			Telephone = telephone;
-		}
-
-		/**
-		 * @return the email
-		 */
-		public String getEmail() {
-			return Email;
-		}
-
-		/**
-		 * @param email
-		 *            the email to set
-		 */
-		public void setEmail(String email) {
-			Email = email;
-		}
-
+	@override
+	public boolean recherche(String user) {
+		return false;
 	}
 
 }
