@@ -6,76 +6,51 @@ package serveur;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
-
-import com.mongodb.MongoClient;
 
 /**
  * @author hamza
  *
  */
-@Stateless
+@Stateless(name = "AnnuaireEJB", mappedName = "AnnuaireImpl")
 public class AnnuaireImpl implements Annuaire {
-	
-	Collection <Utilisateur> user = new HashSet<Utilisateur>();
-	
+
+	Collection<Utilisateur> users = new HashSet<Utilisateur>();
+
 	@Override
 	public void ajouterUtilisateur(Utilisateur user) throws RemoteException {
-		
-		this.user.add(user);
+		this.users.add(user);
 	}
 
 	@Override
-	public Collection<Utilisateur> chercherUtilisateur(String Nom, String prenom) throws RemoteException {
-		
-		Collection <Utilisateur> userSearch = new HashSet<Utilisateur>();
-		
-		if(!this.user.isEmpty()){
-			
-			while(this.user.iterator().hasNext()){
-				
-				Utilisateur aux = this.user.iterator().next();
-				
-				if(aux.getNom() == Nom && aux.getPrenom()==prenom){
+	public Collection<Utilisateur> chercherUtilisateur(String nom, String prenom) throws RemoteException {
+
+		Collection<Utilisateur> userSearch = new HashSet<Utilisateur>();
+		// System.out.println("Procurando: " + nom);
+		if (!this.users.isEmpty()) {
+			Iterator<Utilisateur> i = this.users.iterator();
+
+			while (i.hasNext()) {
+				Utilisateur aux = (Utilisateur) i.next();
+
+				// System.out.println("Usuario: " + aux.getNom());
+				if (nom.compareToIgnoreCase(aux.getNom()) == 0 && prenom.compareToIgnoreCase(aux.getPrenom()) == 0) {
 					userSearch.add(aux);
 				}
 			}
 		}
-		
+
 		return userSearch;
 	}
 
 	@Override
-	public void acceptRefusUtilisateur(Utilisateur user) throws RemoteException {
-		// TODO Auto-generated method stub
-		
+	public void acceptRefusUtilisateur(Utilisateur users) throws RemoteException {
+
 	}
 
 	@Override
-	public void supprimerUtilisateur(Utilisateur user) throws RemoteException {
-		
-		boolean existe = false;
-		
-		if(!this.user.isEmpty()){
-			
-			while(this.user.iterator().hasNext()){
-				
-				Utilisateur aux = this.user.iterator().next();
-				
-				if(aux.equals(user)){
-					System.out.println("Utilisateur " + aux.getPrenom() + "supprimer avec succès!!");
-					existe = true;
-					this.user.remove(aux);
-				}
-			}
-			
-			if(!existe)
-				System.out.println("Utilisateur n'existe pas!!!!");
-		}
-		
-		else
-			System.out.println("Utilisateur n'existe pas!!!!");
+	public boolean supprimerUtilisateur(Utilisateur users) throws RemoteException {
 	}
 }

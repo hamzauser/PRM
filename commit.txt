@@ -1,5 +1,6 @@
-#nom commit termine par un point exemple: "Machin chose."
+Ajout et recherche.
 
-#travail effectue
+Methodes d'ajout et de recherches implementees.
 
-#a faire
+A faire :
+ - tests
