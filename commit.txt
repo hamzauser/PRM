@@ -1,8 +1,6 @@
-Inscription.
+Authentification.
 
-Deplacemet de la classe personne a l'exterieur de Utilisateur.
-Methode d'inscription d'un utilisateur implementee.
+Methode d'authentification d'un utilisateur implementee.
 
 A faire :
- - tests Personne
- - tests inscrption utilisateur
+ - tests authentification utilisateur
