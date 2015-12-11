@@ -1,6 +1,6 @@
-Ajout et recherche.
+Suppression.
 
-Methodes d'ajout et de recherches implementees.
+Methode de suppresssion d'un utilisateur de l'annuaire implementee.
 
 A faire :
  - tests

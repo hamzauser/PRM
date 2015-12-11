@@ -52,5 +52,31 @@ public class AnnuaireImpl implements Annuaire {
 
 	@Override
 	public boolean supprimerUtilisateur(Utilisateur users) throws RemoteException {
+
+		boolean existe = false;
+
+		if (!this.users.isEmpty()) {
+			Iterator<Utilisateur> i = this.users.iterator();
+
+			while (i.hasNext()) {
+				Utilisateur aux = (Utilisateur) i.next();
+
+				if (users.getNom().compareToIgnoreCase(aux.getNom()) == 0
+						&& users.getPrenom().compareToIgnoreCase(aux.getPrenom()) == 0) {
+
+					// System.out.println("Utilisateur: " + aux.getPrenom() + " supprimer avec succes!!");
+					existe = true;
+					i.remove();
+				}
+			}
+
+			if (!existe){
+				System.out.println("Utilisateur n existe pas!!!!");
+				return true;
+			}
+		}
+
+		System.out.println("Utilisateur n existe pas!!!!");
+		return false;
 	}
 }
