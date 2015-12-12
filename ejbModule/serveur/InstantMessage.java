@@ -18,7 +18,13 @@ public class InstantMessage implements Serializable {
 	
 	public Utilisateur sender;
 	public Utilisateur receiver;
-	String content;
+	public String content;
 	int cote = 0;
+	
+	@Override
+	public String toString(){
+		return content;
+		
+	}
 
 }

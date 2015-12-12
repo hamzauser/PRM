@@ -50,6 +50,8 @@ public class MessagerieImpl implements Messagerie, MessageListener {
 				Class<?> c = om.getObject().getClass();
 				if (c == InstantMessage.class){
 					//System.out.println("tada - demandeA");
+					InstantMessage im = (InstantMessage) message.getBody(c);
+					System.out.println(im);
 					jmsContext.createProducer().send(queue03, om);
 				}
 			} catch (JMSException e) {

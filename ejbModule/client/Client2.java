@@ -16,6 +16,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import serveur.InstantMessage;
+
 /**
  * @author hamza
  *
@@ -53,7 +55,9 @@ public class Client2 implements MessageListener{
 				System.out.println("GoodBye");
 				System.exit(0);
 			} else if (messageToSend.contains("a")) {
-				jmsProducer.send(queue01, "Client2 :" + messageToSend);
+				InstantMessage im = new InstantMessage();
+				im.content = "Client 2:" + messageToSend;
+				jmsProducer.send(queue03, im);
 			}
 		}
 		

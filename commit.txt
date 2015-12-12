@@ -1,10 +1,8 @@
 Envoi de messages instantanes.
 
-Definition des methodes de l'interface Messagerie.
-Implementation de la methode onMessage dans MessagerieImpl.
-Creation de la classe InstantMessage pour distinguer un message instantane.
-Creation de client pour tests sur console.
+Tests d'envoi vers le serveur.
 
 A faire:
  - implementation des methodes restantes
- - tests (console et formels)
+ - tests formels
+ - tests serveur vers clients
