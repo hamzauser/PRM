@@ -10,5 +10,16 @@ import java.rmi.Remote;
  *
  */
 public interface Messagerie extends Remote{
-
+	/**
+	 * Methode d'envoi de messages instantanees.
+	 * @param m
+	 * @return success
+	 */
+//	public boolean envoyer(InstantMessage m);
+	/**
+	 * Notification asynchrone.
+	 * @param m
+	 * @return success
+	 */
+	public boolean notifier(InstantMessage m);
 }

@@ -1,3 +1,10 @@
-Comit initial.
+Envoi de messages instantanes.
 
-Interfaces et packages crees.
+Definition des methodes de l'interface Messagerie.
+Implementation de la methode onMessage dans MessagerieImpl.
+Creation de la classe InstantMessage pour distinguer un message instantane.
+Creation de client pour tests sur console.
+
+A faire:
+ - implementation des methodes restantes
+ - tests (console et formels)
