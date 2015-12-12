@@ -17,6 +17,7 @@ import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 
 /**
@@ -108,18 +109,34 @@ public class AnnuaireImpl implements Annuaire, MessageListener {
 	@Override
 	public void onMessage(Message message) {
 		
-		try {
-			Utilisateur util = message.getBody(Utilisateur.class);
-			System.out.println("Tada - user");
-			System.out.println("Utilisateur " + util.getNom());
-		} catch (JMSException e) {
-			
+//		try {
+//			Utilisateur util = message.getBody(Utilisateur.class);
+//			System.out.println("Tada - user");
+//			System.out.println("Utilisateur " + util.getNom());
+//		} catch (JMSException e) {
+//			
+//			try {
+//				DemandeAjout deman = message.getBody(DemandeAjout.class);
+//				System.out.println("Tada - demandeA");
+//				System.out.println("Demande " + deman.sender.getNom());
+//			} catch (JMSException e1) {
+//				e1.printStackTrace();
+//			}
+//		}
+//		DemandeAjout da;
+		if (message instanceof ObjectMessage){
+			ObjectMessage om = ((ObjectMessage) message);
 			try {
-				DemandeAjout deman = message.getBody(DemandeAjout.class);
-				System.out.println("Tada - demandeA");
-				System.out.println("Demande " + deman.sender.getNom());
-			} catch (JMSException e1) {
-				e1.printStackTrace();
+				Class<?> c = om.getObject().getClass();
+				if (c == DemandeAjout.class){
+					System.out.println("tada - demandeA");
+				}
+				if (c == Utilisateur.class){
+					System.out.println("tada - user");
+				}
+			} catch (JMSException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}

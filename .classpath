@@ -28,6 +28,7 @@
 			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Diógenes/Documents/Workspace/glassfish4/glassfish/lib/gf-client.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hamza/Desktop/eclipse/Middle ware/glassfish4/glassfish/lib/appserv-rt.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hamza/Desktop/eclipse/Middle ware/glassfish4/glassfish/lib/javaee.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
