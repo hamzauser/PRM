@@ -110,14 +110,35 @@ public class AnnuaireImpl implements Annuaire, MessageListener {
 		
 		try {
 			Utilisateur util = message.getBody(Utilisateur.class);
-			System.out.println("Tada - user");
-			System.out.println("Utilisateur " + util.getNom());
+			
 		} catch (JMSException e) {
 			
 			try {
-				DemandeAjout deman = message.getBody(DemandeAjout.class);
-				System.out.println("Tada - demandeA");
-				System.out.println("Demande " + deman.sender.getNom());
+				DemandeAjout demande = message.getBody(DemandeAjout.class);
+				
+				if(demande.cote == 1){
+					jmsContext.createProducer().send(queue03, demande);
+				}
+				
+				else if(demande.cote == 2){
+					jmsContext.createProducer().send(queue02, demande);
+				}
+				
+				else if (demande.positive && demande.response){
+					System.out.println(demande.receiver.getUserName());
+					
+					//ajouter dans la base de donnee
+				}
+				
+				else if(!demande.positive && demande.response && demande.cote == 1){
+					jmsContext.createProducer().send(queue03, demande);
+				}
+				
+				else if(!demande.positive && demande.response && demande.cote == 2){
+					jmsContext.createProducer().send(queue02, demande);
+				}
+				
+				
 			} catch (JMSException e1) {
 				e1.printStackTrace();
 			}

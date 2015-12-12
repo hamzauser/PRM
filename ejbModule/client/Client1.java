@@ -18,7 +18,7 @@ import javax.jms.Queue;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
+import serveur.DemandeAjout;
 import serveur.UtilisateurImpl;
 
 /**
@@ -40,8 +40,12 @@ public class Client1 implements MessageListener{
 		UtilisateurImpl utilisateur = new UtilisateurImpl();
 		UtilisateurImpl utilisateur2 = new UtilisateurImpl();
 		
-		utilisateur.setNom("Oulaya");
-		utilisateur.setPrenom("Hanafi");
+
+		utilisateur.setUserName("Oulaya");
+		utilisateur2.setUserName("Diogenes");
+		
+		DemandeAjout da = new DemandeAjout(utilisateur, utilisateur2);
+		
 		
 		Queue queue01 = (Queue)context.lookup("Queue01");
 		Queue queue02 = (Queue)context.lookup("Queue02");
@@ -63,7 +67,7 @@ public class Client1 implements MessageListener{
 				System.out.println("GoodBye");
 				System.exit(0);
 			} else if (messageToSend.contains("a")) {
-				jmsProducer.send(queue01, utilisateur);
+				jmsProducer.send(queue01, da);
 			}
 		}
 		
@@ -72,7 +76,11 @@ public class Client1 implements MessageListener{
 	@Override
 	public void onMessage(Message message) {
 		try {
-			System.out.println(message.getBody(String.class));
+			
+			DemandeAjout demande = message.getBody(DemandeAjout.class);
+			
+			System.out.println(demande.receiver.getUserName());
+			
 		} catch (JMSException e) {
 			e.printStackTrace();
 		}

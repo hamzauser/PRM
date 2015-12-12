@@ -13,4 +13,6 @@ public interface Utilisateur extends Serializable{
 		public void setTelephone ( String telephone ) ;
 		public String getEmail() ;
 		public void setEmail( String email) ;
+		public void setUserName(String user);
+		public String getUserName();
 }

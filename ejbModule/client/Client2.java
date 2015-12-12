@@ -17,6 +17,10 @@ import javax.jms.Queue;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import serveur.DemandeAjout;
+import serveur.UtilisateurImpl;
+
 import javax.jms.ConnectionFactory;
 
 /**
@@ -38,6 +42,16 @@ public class Client2 implements MessageListener{
 		Queue queue01 = (Queue)context.lookup("Queue01");
 		Queue queue03 = (Queue)context.lookup("Queue03");
 		
+		UtilisateurImpl utilisateur = new UtilisateurImpl();
+		UtilisateurImpl utilisateur2 = new UtilisateurImpl();
+		
+
+		utilisateur.setUserName("Diogenes");
+		utilisateur2.setUserName("Oulaya");
+		
+		DemandeAjout da = new DemandeAjout(utilisateur, utilisateur2);
+
+		
 		JMSContext jmsContext = ((ConnectionFactory)context.lookup("GFConnectionFactory")).createContext();
 		
 		jmsContext.createConsumer(queue03).setMessageListener(client2);
@@ -55,8 +69,8 @@ public class Client2 implements MessageListener{
 				jmsContext.close();
 				System.out.println("GoodBye");
 				System.exit(0);
-			} else if (messageToSend.contains("je vais ajouter")) {
-				jmsProducer.send(queue01, "u2" + messageToSend.substring(messageToSend.indexOf('#')));
+			} else if (messageToSend.contains("a")) {
+				jmsProducer.send(queue01, da);
 			}
 		}
 		

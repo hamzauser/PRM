@@ -9,7 +9,7 @@ package serveur;
  */
 public class UtilisateurImpl implements Utilisateur {
 
-	String nom = "", prenom = "", addresse = "", telephone = "", email = "";
+	String nom = "", prenom = "", addresse = "", telephone = "", email = "",username ="";
 	
 	private static final long serialVersionUID = 1L;
 
@@ -17,7 +17,7 @@ public class UtilisateurImpl implements Utilisateur {
 	public String getNom() {
 		return this.nom;
 	}
-
+	
 	@Override
 	public void setNom(String nom) {
 		this.nom = nom;
@@ -55,13 +55,23 @@ public class UtilisateurImpl implements Utilisateur {
 
 	@Override
 	public String getEmail() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.email;
 	}
 
 	@Override
 	public void setEmail(String email) {
-		// TODO Auto-generated method stub
-		
+		this.email = email;
+	}
+
+
+	@Override
+	public void setUserName(String user) {
+		this.username = user;
+	}
+
+
+	@Override
+	public String getUserName() {
+		return this.username;
 	}
 }

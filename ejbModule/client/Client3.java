@@ -51,8 +51,7 @@ public class Client3 implements MessageListener{
 
 		
 		DemandeAjout da = new DemandeAjout(utilisateur, utilisateur2);
-		
-		
+				
 		Queue queue01 = (Queue)context.lookup("Queue01");
 		Queue queue02 = (Queue)context.lookup("Queue02");
 		
