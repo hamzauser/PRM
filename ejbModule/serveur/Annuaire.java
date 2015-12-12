@@ -45,4 +45,11 @@ public interface Annuaire {
 	 * @throws RemoteException
 	 */
 	public boolean supprimerUtilisateur(Utilisateur user) throws RemoteException;
+	
+	/**
+	 * 
+	 * @param user
+	 * @throws RemoteException
+	 */
+	public void demandeDajout(Utilisateur user) throws RemoteException;
 }

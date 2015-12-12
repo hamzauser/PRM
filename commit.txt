@@ -1,6 +1,7 @@
-Suppression.
+Modification de la Classe AnnuaireImpl
 
-Methode de suppresssion d'un utilisateur de l'annuaire implementee.
+Mettre la methode onMessage pour faire la communication entre les clients et 
+le serveur glassfish.
 
 A faire :
- - tests
+ - Le traitement des demandes de ajout et les tests.
