@@ -19,6 +19,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import serveur.DemandeAjout;
+import serveur.Utilisateur;
 import serveur.UtilisateurImpl;
 
 import javax.jms.ConnectionFactory;
@@ -27,7 +28,7 @@ import javax.jms.ConnectionFactory;
  * @author hamza
  *
  */
-public class Client2 implements MessageListener{
+public class Client2 extends Thread implements MessageListener{
 
 	/**
 	 * @param args
@@ -35,6 +36,8 @@ public class Client2 implements MessageListener{
 	 * @throws JMSException 
 	 * @throws IOException 
 	 */
+	static DemandeAjout msgRecu;
+	
 	public static void main(String[] args) throws JMSException, NamingException, IOException {
 		Client2 client2 = new Client2(); 
 		Context context = Client2.getInitialContext();
@@ -49,7 +52,8 @@ public class Client2 implements MessageListener{
 		utilisateur.setUserName("Diogenes");
 		utilisateur2.setUserName("Oulaya");
 		
-		DemandeAjout da = new DemandeAjout(utilisateur, utilisateur2);
+		DemandeAjout demande = new DemandeAjout(utilisateur, utilisateur2);
+		demande.cote = 2;
 
 		
 		JMSContext jmsContext = ((ConnectionFactory)context.lookup("GFConnectionFactory")).createContext();
@@ -59,27 +63,50 @@ public class Client2 implements MessageListener{
 		JMSProducer jmsProducer = jmsContext.createProducer();
 		BufferedReader bufferedReader = new java.io.BufferedReader(new InputStreamReader(System.in));
 		
-		System.out.println("Client2 are Connected ....");
 		String messageToSend = null;
 				
 		while(true){
+			System.out.println("Client2: ");
 			messageToSend = bufferedReader.readLine();
 			
 			if (messageToSend.equalsIgnoreCase("exit") ) {
 				jmsContext.close();
 				System.out.println("GoodBye");
 				System.exit(0);
-			} else if (messageToSend.contains("a")) {
-				jmsProducer.send(queue01, da);
+			} 
+			else if (messageToSend.contains("oui")) {
+				
+				msgRecu.positive = true;
+				msgRecu.response = true;
+				msgRecu.cote = 2;
+				
+				Utilisateur aux = msgRecu.receiver;
+				msgRecu.receiver = msgRecu.sender;
+				msgRecu.sender = aux;
+				
+				jmsProducer.send(queue01, msgRecu);
+			}
+			else if (messageToSend.contains("non")) {
+				
+				msgRecu.positive = false;
+				msgRecu.response = true;
+				msgRecu.cote = 2;
+				msgRecu.refu = "L'utilisateur ne veut pas t'ajouter";
+				
+				jmsProducer.send(queue01, msgRecu);
+			}
+			else if (messageToSend.contains("ajoute")) {
+				jmsProducer.send(queue01, demande);
 			}
 		}
-		
 	}
 
 	@Override
 	public void onMessage(Message message) {
 		try {
-			System.out.println(message.getBody(String.class));
+			msgRecu = message.getBody(DemandeAjout.class);
+			
+			System.out.println("Cliente2Recu" + msgRecu.receiver.getUserName());
 		} catch (JMSException e) {
 			e.printStackTrace();
 		}
@@ -91,5 +118,9 @@ public class Client2 implements MessageListener{
 		properties.setProperty("java.naming.factory.url.pkgs", "com.sun.enterprise.naming");
 		properties.setProperty("java.naming.provider.url", "iiop://localhost:3700");
 		return new InitialContext(properties);
+	}
+	
+	public void run(){
+		System.out.println("Client2");
 	}
 }

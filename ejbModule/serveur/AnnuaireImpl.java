@@ -17,6 +17,7 @@ import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 
 /**
@@ -107,40 +108,49 @@ public class AnnuaireImpl implements Annuaire, MessageListener {
 
 	@Override
 	public void onMessage(Message message) {
-		
-		try {
-			Utilisateur util = message.getBody(Utilisateur.class);
-			
-		} catch (JMSException e) {
+		if (message instanceof ObjectMessage){
+			ObjectMessage om = ((ObjectMessage) message);
 			
 			try {
-				DemandeAjout demande = message.getBody(DemandeAjout.class);
+				Class<?> c = om.getObject().getClass();
 				
-				if(demande.cote == 1){
-					jmsContext.createProducer().send(queue03, demande);
-				}
-				
-				else if(demande.cote == 2){
-					jmsContext.createProducer().send(queue02, demande);
-				}
-				
-				else if (demande.positive && demande.response){
-					System.out.println(demande.receiver.getUserName());
+				if (c == DemandeAjout.class){
+					DemandeAjout demande = message.getBody(DemandeAjout.class);
 					
-					//ajouter dans la base de donnee
+					if(demande.cote == 1){
+						jmsContext.createProducer().send(queue03, demande);
+						System.out.println("lado 1 pede para adicionar 2");
+					}
+					
+					else if(demande.cote == 2){
+						jmsContext.createProducer().send(queue02, demande);
+						System.out.println("lado 2 pede para adicionar 1");
+					}
+					
+					else if (demande.positive && demande.response){
+						System.out.println(demande.receiver.getUserName());
+						
+						//ajouter dans la base de donnee
+					}
+					
+					else if(!demande.positive && demande.response && demande.cote == 1){
+						jmsContext.createProducer().send(queue03, demande);
+						System.out.println("lado 1 recusa adicionar 2");
+					}
+					
+					else if(!demande.positive && demande.response && demande.cote == 2){
+						jmsContext.createProducer().send(queue02, demande);
+						System.out.println("lado 2 recusa adicionar 2");
+					}
 				}
 				
-				else if(!demande.positive && demande.response && demande.cote == 1){
-					jmsContext.createProducer().send(queue03, demande);
+				else if (c == Utilisateur.class){
+					System.out.println("tada - user");
 				}
 				
-				else if(!demande.positive && demande.response && demande.cote == 2){
-					jmsContext.createProducer().send(queue02, demande);
-				}
-				
-				
-			} catch (JMSException e1) {
-				e1.printStackTrace();
+			} catch (JMSException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}

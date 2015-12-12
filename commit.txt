@@ -1,7 +1,7 @@
 Modification de la Classe AnnuaireImpl
 
-Mettre la methode onMessage pour faire la communication entre les clients et 
-le serveur glassfish.
+Ajoute des traitements pour que  les clients peuvent ajouter un autre client 
+dans l'annuaire. 
 
 A faire :
- - Le traitement des demandes de ajout et les tests.
+ - Ajouter dans la base de donnée

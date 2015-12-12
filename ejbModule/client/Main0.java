@@ -12,15 +12,16 @@ import javax.naming.NamingException;
  * @author Diógenes
  *
  */
-public class Main0 {
+public class Main0{
 
 	/**
 	 * @param args
+	 * @throws InterruptedException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		
 		Thread client1 = new Thread(){
-			public void run(){
+			public synchronized void run(){
 				try {
 					Client1.main(args);
 				} catch (JMSException e) {
@@ -37,9 +38,9 @@ public class Main0 {
 		};
 		
 		Thread client2 = new Thread(){
-			public void run(){
+			public synchronized void run(){
 				try {
-					Client3.main(args);
+					Client2.main(args);
 				} catch (JMSException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -54,6 +55,8 @@ public class Main0 {
 		};
 		
 		client1.start();
-		client2.start();	
+		client2.start();
+		client1.join();
+		client2.join();
 	}
 }
