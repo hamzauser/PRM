@@ -26,7 +26,7 @@ import serveur.UtilisateurImpl;
  * @author hamza
  *
  */
-public class Client1 extends Thread implements MessageListener {
+public class Client1 implements MessageListener, Runnable {
 
 	/**
 	 * @param args
@@ -35,9 +35,9 @@ public class Client1 extends Thread implements MessageListener {
 	 * @throws IOException
 	 */
 	
-	static DemandeAjout msgRecu;
+	DemandeAjout msgRecu = new DemandeAjout(null, null);
 	
-	public static void main(String[] args) throws JMSException, NamingException, IOException {
+	public void sendReceiveMsg1() throws JMSException, NamingException, IOException {
 		Client1 client1 = new Client1();
 		Context context = Client1.getInitialContext();
 
@@ -70,25 +70,26 @@ public class Client1 extends Thread implements MessageListener {
 				System.out.println("GoodBye");
 				System.exit(0);
 			} else if (messageToSend.contains("oui")) {
+				
+				this.msgRecu.positive = true;
+				this.msgRecu.response = true;
+				this.msgRecu.cote = 1;
 
-				msgRecu.positive = true;
-				msgRecu.response = true;
-				msgRecu.cote = 1;
+				Utilisateur aux = this.msgRecu.receiver;
+				this.msgRecu.receiver = this.msgRecu.sender;
+				this.msgRecu.sender = aux;
 
-				Utilisateur aux = msgRecu.receiver;
-				msgRecu.receiver = msgRecu.sender;
-				msgRecu.sender = aux;
-
-				jmsProducer.send(queue01, msgRecu);
+				jmsProducer.send(queue01, this.msgRecu);
 			} else if (messageToSend.contains("non")) {
 
-				msgRecu.positive = false;
-				msgRecu.response = true;
-				msgRecu.cote = 1;
-				msgRecu.refu = "L'utilisateur ne veut pas t'ajouter";
+				this.msgRecu.positive = false;
+				this.msgRecu.response = true;
+				this.msgRecu.cote = 1;
+				this.msgRecu.refu = "L'utilisateur ne veut pas t'ajouter";
 
-				jmsProducer.send(queue01, msgRecu);
+				jmsProducer.send(queue01, this.msgRecu);
 			} else if (messageToSend.contains("ajoute")) {
+				demande.demande = true;
 				jmsProducer.send(queue01, demande);
 			}
 		}
@@ -98,10 +99,14 @@ public class Client1 extends Thread implements MessageListener {
 	@Override
 	public void onMessage(Message message) {
 		try {
-
-			msgRecu = message.getBody(DemandeAjout.class);
-
-			System.out.println("Client1-Recu: " + msgRecu.receiver.getUserName());
+			this.msgRecu = message.getBody(DemandeAjout.class);
+			
+			if(!msgRecu.positive && !msgRecu.demande)
+				System.out.println("REFUSSS!!!!");
+			else if(msgRecu.positive && !msgRecu.demande)
+				System.out.println("Ajoute avec successs");
+			else
+				System.out.println(msgRecu.cote + "demande d'ajoute");
 
 		} catch (JMSException e) {
 			e.printStackTrace();
@@ -117,6 +122,11 @@ public class Client1 extends Thread implements MessageListener {
 	}
 	
 	public void run(){
-		System.out.println("Client1");
+		try {
+			sendReceiveMsg1();
+		} catch (JMSException | NamingException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

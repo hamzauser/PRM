@@ -18,6 +18,7 @@ public class DemandeAjout extends Demande {
 		this.receiver = receiver;
 		this.sender = sender;
 		this.response = false;
+		this.demande = false;
 		this.cote = 0;
 		this.refu = "";
 	}

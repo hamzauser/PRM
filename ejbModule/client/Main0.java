@@ -17,43 +17,14 @@ public class Main0{
 	/**
 	 * @param args
 	 * @throws InterruptedException 
+	 * @throws IOException 
+	 * @throws NamingException 
+	 * @throws JMSException 
 	 */
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, JMSException, NamingException, IOException {
 		
-		Thread client1 = new Thread(){
-			public synchronized void run(){
-				try {
-					Client1.main(args);
-				} catch (JMSException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (NamingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		};
-		
-		Thread client2 = new Thread(){
-			public synchronized void run(){
-				try {
-					Client2.main(args);
-				} catch (JMSException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (NamingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		};
-		
+		Thread client1 = new Thread(new Client1());
+		Thread client2 = new Thread(new Client2());
 		client1.start();
 		client2.start();
 		client1.join();

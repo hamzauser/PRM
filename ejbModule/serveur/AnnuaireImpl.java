@@ -117,19 +117,21 @@ public class AnnuaireImpl implements Annuaire, MessageListener {
 				if (c == DemandeAjout.class){
 					DemandeAjout demande = message.getBody(DemandeAjout.class);
 					
-					if(demande.cote == 1){
+					System.out.println("Positive: " + demande.positive);
+					System.out.println("Cote: " + demande.cote);
+					System.out.println("Response: " + demande.response);
+					System.out.println("Refu: " + demande.refu);
+					
+					if(demande.positive && demande.response && demande.cote == 1){
+						demande.demande = false;
 						jmsContext.createProducer().send(queue03, demande);
-						System.out.println("lado 1 pede para adicionar 2");
-					}
-					
-					else if(demande.cote == 2){
-						jmsContext.createProducer().send(queue02, demande);
-						System.out.println("lado 2 pede para adicionar 1");
-					}
-					
-					else if (demande.positive && demande.response){
-						System.out.println(demande.receiver.getUserName());
 						
+						//ajouter dans la base de donnee
+					}
+					
+					if(demande.positive && demande.response && demande.cote == 2){
+						demande.demande = false;
+						jmsContext.createProducer().send(queue02, demande);
 						//ajouter dans la base de donnee
 					}
 					
@@ -141,6 +143,18 @@ public class AnnuaireImpl implements Annuaire, MessageListener {
 					else if(!demande.positive && demande.response && demande.cote == 2){
 						jmsContext.createProducer().send(queue02, demande);
 						System.out.println("lado 2 recusa adicionar 2");
+					}
+					
+					else if(demande.cote == 1 && demande.demande){
+						demande.positive = true;
+						jmsContext.createProducer().send(queue03, demande);
+						System.out.println("lado 1 pede para adicionar 2");
+					}
+					
+					else if(demande.cote == 2 && demande.demande){
+						demande.positive = true;
+						jmsContext.createProducer().send(queue02, demande);
+						System.out.println("lado 2 pede para adicionar 1");
 					}
 				}
 				

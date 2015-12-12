@@ -16,6 +16,7 @@ public class Demande implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	public boolean response;
+	public boolean demande;
 	public Utilisateur sender;
 	public Utilisateur receiver;
 	public boolean positive;

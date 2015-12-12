@@ -1,7 +1,11 @@
 Modification de la Classe AnnuaireImpl
+Modification de la Classe Client1 et  Client2
 
 Ajoute des traitements pour que  les clients peuvent ajouter un autre client 
-dans l'annuaire. 
+dans l'annuaire.
+Les Clients recoivent les messages de ajoute ou refus.  
 
 A faire :
  - Ajouter dans la base de donnée
+ - Persistence de la demande d'ajout
+ - Savoir si le client sera connecter
