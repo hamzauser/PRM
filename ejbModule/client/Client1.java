@@ -3,6 +3,9 @@
  */
 package client;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 import javax.jms.ConnectionFactory;
@@ -33,6 +36,7 @@ public class Client1 implements MessageListener {
 	public static void main(String[] args) throws NamingException, JMSException {
 		
 		Client1 client1 = new Client1();
+		
 		Context context = Client1.getInitialContext();
 		
 		Queue queue01 = (Queue) context.lookup("Queue01"); // emission
@@ -58,6 +62,39 @@ public class Client1 implements MessageListener {
 		properties.setProperty("java.naming.provider.url", "iiop://localhost:3700");
 		return new InitialContext(properties);
 	}
+	
+	public void repondre() throws IOException, NamingException, JMSException{
+		// initialisations
+		Context context = Client1.getInitialContext();
+		JMSContext jmsContext = ((ConnectionFactory) context.lookup("GFConnectionFactory")).createContext();
+		JMSProducer jmsProducer = jmsContext.createProducer();
+		Queue queue01 = (Queue) context.lookup("Queue01"); // emission
+		
+		// recuperer l'input
+		BufferedReader bufferedReader = new java.io.BufferedReader(new InputStreamReader(System.in));
+		String messageToSend = null;
+		messageToSend = bufferedReader.readLine();
+		// evoyer le message par rapport a l'input
+		if (messageToSend.equalsIgnoreCase("exit")) {
+			jmsContext.close();
+			System.out.println("GoodBye");
+			System.exit(0);
+		} else if (messageToSend.contains("oui")) {
+			// envoyer reponse positive
+			Defi defi = new Defi();
+			defi.cote = 1;
+			defi.positive = true;
+			defi.response = true;
+			jmsProducer.send(queue01, defi);
+		} else if (messageToSend.contains("non")) {
+			// envoyer reponse negative
+			Defi defi = new Defi();
+			defi.cote = 1;
+			defi.positive = false;
+			defi.response = true;
+			jmsProducer.send(queue01, defi);
+		}
+	}
 
 	@Override
 	public void onMessage(Message message) {
@@ -67,7 +104,15 @@ public class Client1 implements MessageListener {
 				Class<?> c = om.getObject().getClass();
 				if (c == Defi.class){
 					Defi object = (Defi) om.getBody(c);
-					System.out.println("tada - defi" + object.cote);
+					// System.out.println("tada - defi" + object.cote);
+					if (!object.response){
+						try {
+							repondre();
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
 				}
 			} catch (JMSException e) {
 				// TODO Auto-generated catch block

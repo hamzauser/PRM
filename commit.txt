@@ -1,8 +1,7 @@
-Envoi defi.
+Acceptation defi.
 
-Creation d'une classe Defi representant les objets defis envoyes.
-Implementation de l'envoi de defi via un client.
-Implementation de la reception du defi par un autre client.
+Creation de la methode repondre pour un client.
+Implementation de la methode reponse qui accepte ou refuse un defi.
 Tests consoles.
 
 A faire:

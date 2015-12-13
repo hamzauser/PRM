@@ -50,12 +50,20 @@ public class GestionnaireDefiImpl implements GestionnaireDefi, MessageListener {
 						object.cote = 11;
 						jmsContext.createProducer().send(queue03, object);
 						System.out.println("defi envoye a 2");
+						if (object.response && object.positive)
+							System.out.println("defi accepte par 2");
+						else if (object.response && !object.positive)
+							System.out.println("defi refuse par 2");
 					}
 					else if (object.cote == 2){
 						// on envoi au client1
 						object.cote = 22;
 						jmsContext.createProducer().send(queue02, object);
 						System.out.println("defi envoye a 1");
+						if (object.response && object.positive)
+							System.out.println("defi accepte par 1");
+						else if (object.response && !object.positive)
+							System.out.println("defi refuse par 1");
 					}
 				}
 			} catch (JMSException e) {

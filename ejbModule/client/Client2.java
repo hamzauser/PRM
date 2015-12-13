@@ -3,6 +3,9 @@
  */
 package client;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 import javax.jms.ConnectionFactory;
@@ -27,14 +30,14 @@ public class Client2 implements MessageListener {
 
 	/**
 	 * @param args
-	 * @throws NamingException 
-	 * @throws JMSException 
+	 * @throws NamingException
+	 * @throws JMSException
 	 */
 	public static void main(String[] args) throws NamingException, JMSException {
-		
+
 		Client2 client2 = new Client2();
 		Context context = Client2.getInitialContext();
-		
+
 		Queue queue01 = (Queue) context.lookup("Queue01"); // emission
 		Queue queue03 = (Queue) context.lookup("Queue03"); // reception
 
@@ -42,21 +45,54 @@ public class Client2 implements MessageListener {
 		jmsContext.createConsumer(queue03).setMessageListener(client2);
 
 		JMSProducer jmsProducer = jmsContext.createProducer();
-		
+
 		// envoi du defi
 		Defi defi = new Defi();
 		defi.cote = 2;
 		jmsProducer.send(queue01, defi);
-		
-		while(true){}
+
+		while (true) {}
 	}
-	
+
 	public static Context getInitialContext() throws JMSException, NamingException {
 		Properties properties = new Properties();
 		properties.setProperty("java.naming.factory.initial", "com.sun.enterprise.naming.SerialInitContextFactory");
 		properties.setProperty("java.naming.factory.url.pkgs", "com.sun.enterprise.naming");
 		properties.setProperty("java.naming.provider.url", "iiop://localhost:3700");
 		return new InitialContext(properties);
+	}
+
+	public void repondre() throws IOException, NamingException, JMSException{
+		// initialisations
+		Context context = Client2.getInitialContext();
+		Queue queue01 = (Queue) context.lookup("Queue01"); // emission
+		JMSContext jmsContext = ((ConnectionFactory) context.lookup("GFConnectionFactory")).createContext();
+		JMSProducer jmsProducer = jmsContext.createProducer();
+		
+		// recuperer l'input
+		BufferedReader bufferedReader = new java.io.BufferedReader(new InputStreamReader(System.in));
+		String messageToSend = null;
+		messageToSend = bufferedReader.readLine();
+		// evoyer le message par rapport a l'input
+		if (messageToSend.equalsIgnoreCase("exit")) {
+			jmsContext.close();
+			System.out.println("GoodBye");
+			System.exit(0);
+		} else if (messageToSend.contains("oui")) {
+			// envoyer reponse positive
+			Defi defi = new Defi();
+			defi.cote = 2;
+			defi.positive = true;
+			defi.response = true;
+			jmsProducer.send(queue01, defi);
+		} else if (messageToSend.contains("non")) {
+			// envoyer reponse negative
+			Defi defi = new Defi();
+			defi.cote = 2;
+			defi.positive = false;
+			defi.response = true;
+			jmsProducer.send(queue01, defi);
+		}
 	}
 
 	@Override
@@ -67,7 +103,15 @@ public class Client2 implements MessageListener {
 				Class<?> c = om.getObject().getClass();
 				if (c == Defi.class){
 					Defi object = (Defi) om.getBody(c);
-					System.out.println("tada - defi" + object.cote);
+					// System.out.println("tada - defi" + object.cote);
+					if (!object.response){
+						try {
+							repondre();
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
 				}
 			} catch (JMSException e) {
 				// TODO Auto-generated catch block
@@ -75,5 +119,4 @@ public class Client2 implements MessageListener {
 			}
 		}
 	}
-
 }
