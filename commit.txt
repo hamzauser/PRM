@@ -1,6 +1,6 @@
-Envoi de messages instantanes.
+Ajoute des modifications dans le pom.xml
 
-Disscutions entre deux clients.
+Ajoute des dependences dans le pom.xml
 
 A faire:
  - implementation des methodes restantes
