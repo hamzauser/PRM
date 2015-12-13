@@ -46,18 +46,20 @@ public class Client2 implements MessageListener{
 		
 		System.out.println("Client2 are Connected ....");
 		String messageToSend = null;
-				
+		InstantMessage im = new InstantMessage();
+		
 		while(true){
+			
 			messageToSend = bufferedReader.readLine();
+			im.content = "Client 2:" + messageToSend;
+			im.cote = 2;
+			jmsProducer.send(queue01, im);
 			
 			if (messageToSend.equalsIgnoreCase("exit") ) {
 				jmsContext.close();
 				System.out.println("GoodBye");
 				System.exit(0);
 			} else if (messageToSend.contains("a")) {
-				InstantMessage im = new InstantMessage();
-				im.content = "Client 2:" + messageToSend;
-				jmsProducer.send(queue03, im);
 			}
 		}
 		
@@ -66,7 +68,8 @@ public class Client2 implements MessageListener{
 	@Override
 	public void onMessage(Message message) {
 		try {
-			System.out.println(message.getBody(String.class));
+			InstantMessage msg = message.getBody(InstantMessage.class);
+			System.out.println(msg.cote + " : " + msg.content);
 		} catch (JMSException e) {
 			e.printStackTrace();
 		}

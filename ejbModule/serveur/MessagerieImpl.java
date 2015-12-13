@@ -6,6 +6,7 @@ package serveur;
 import javax.annotation.Resource;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
@@ -20,6 +21,8 @@ import javax.jms.Queue;
  */
 @MessageDriven(activationConfig = { @ActivationConfigProperty(propertyName = "destination", propertyValue = "Queue01"),
 		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue") }, mappedName = "Queue01")
+
+@Stateless(name = "AnnuaireEJB", mappedName = "AnnuaireImpl")
 public class MessagerieImpl implements Messagerie, MessageListener {
 
 //	@Override
@@ -49,10 +52,14 @@ public class MessagerieImpl implements Messagerie, MessageListener {
 			try {
 				Class<?> c = om.getObject().getClass();
 				if (c == InstantMessage.class){
-					//System.out.println("tada - demandeA");
 					InstantMessage im = (InstantMessage) message.getBody(c);
-					System.out.println(im);
-					jmsContext.createProducer().send(queue03, om);
+					
+					if(im.cote == 1){
+						jmsContext.createProducer().send(queue03, im);
+					}
+					else if(im.cote == 2){
+						jmsContext.createProducer().send(queue02, im);
+					}
 				}
 			} catch (JMSException e) {
 				// TODO Auto-generated catch block

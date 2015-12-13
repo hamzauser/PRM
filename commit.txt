@@ -1,6 +1,6 @@
 Envoi de messages instantanes.
 
-Tests d'envoi vers le serveur.
+Disscutions entre deux clients.
 
 A faire:
  - implementation des methodes restantes
