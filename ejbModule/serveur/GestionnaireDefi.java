@@ -10,5 +10,5 @@ import java.rmi.Remote;
  *
  */
 public interface GestionnaireDefi extends Remote{
-
+	
 }

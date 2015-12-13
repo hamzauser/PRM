@@ -1,3 +1,10 @@
-Comit initial.
+Envoi defi.
 
-Interfaces et packages crees.
+Creation d'une classe Defi representant les objets defis envoyes.
+Implementation de l'envoi de defi via un client.
+Implementation de la reception du defi par un autre client.
+Tests consoles.
+
+A faire:
+ - tests formels
+ - doc
