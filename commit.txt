@@ -1,9 +1,8 @@
-Acceptation defi.
+Saisie resultat.
 
-Creation de la methode repondre pour un client.
-Implementation de la methode reponse qui accepte ou refuse un defi.
-Tests consoles.
+Creation de la methode saisir une resultat.
+Tests consoles echoues.
 
 A faire:
- - tests formels
+ - tests formels et consoles
  - doc

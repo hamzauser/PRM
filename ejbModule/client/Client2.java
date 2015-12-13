@@ -21,6 +21,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import serveur.Defi;
+import serveur.Resultat;
 
 /**
  * @author Diógenes
@@ -47,9 +48,13 @@ public class Client2 implements MessageListener {
 		JMSProducer jmsProducer = jmsContext.createProducer();
 
 		// envoi du defi
-		Defi defi = new Defi();
-		defi.cote = 2;
-		jmsProducer.send(queue01, defi);
+		//Defi defi = new Defi();
+		//defi.cote = 2;
+		//jmsProducer.send(queue01, defi);
+		
+		Resultat resultat = new Resultat();
+		resultat.cote = 2;
+		jmsProducer.send(queue01, resultat);
 
 		while (true) {}
 	}
@@ -62,6 +67,46 @@ public class Client2 implements MessageListener {
 		return new InitialContext(properties);
 	}
 
+	public void repondre_resultat() throws IOException, NamingException, JMSException{
+		// initialisations
+		Context context = Client1.getInitialContext();
+		JMSContext jmsContext = ((ConnectionFactory) context.lookup("GFConnectionFactory")).createContext();
+		JMSProducer jmsProducer = jmsContext.createProducer();
+		Queue queue01 = (Queue) context.lookup("Queue01"); // emission
+		
+		// recuperer l'input
+		BufferedReader bufferedReader = new java.io.BufferedReader(new InputStreamReader(System.in));
+		String messageToSend = null;
+		messageToSend = bufferedReader.readLine();
+		// evoyer le message par rapport a l'input
+		if (messageToSend.equalsIgnoreCase("exit")) {
+			jmsContext.close();
+			System.out.println("GoodBye");
+			System.exit(0);
+		}else if (messageToSend.contains("-")) {
+			// envoyer reponse positive
+			Resultat resultat = new Resultat();
+			resultat.valide = true;
+			jmsProducer.send(queue01, resultat); 
+		}else if (messageToSend.contains("oui")) {
+			// envoyer reponse positive
+			Resultat resultat = new Resultat();
+			resultat.cote = 2;
+			resultat.positive = true;
+			resultat.response = true;
+			resultat.valide = true;
+			jmsProducer.send(queue01, resultat);
+		} else if (messageToSend.contains("non")) {
+			// envoyer reponse negative
+			Resultat resultat = new Resultat();
+			resultat.cote = 2;
+			resultat.positive = false;
+			resultat.response = true;
+			resultat.valide = true;
+			jmsProducer.send(queue01, resultat);
+		}
+	}
+	
 	public void repondre() throws IOException, NamingException, JMSException{
 		// initialisations
 		Context context = Client2.getInitialContext();
@@ -107,6 +152,18 @@ public class Client2 implements MessageListener {
 					if (!object.response){
 						try {
 							repondre();
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+				if (c == Resultat.class){
+					Resultat object = (Resultat) om.getBody(c);
+					// System.out.println("tada - defi" + object.cote);
+					if (!object.response){
+						try {
+							repondre_resultat();
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

@@ -20,42 +20,42 @@ import javax.jms.Queue;
  *
  */
 
-@MessageDriven(activationConfig = { 
-		@ActivationConfigProperty(propertyName = "destination", propertyValue = "Queue01"),
-		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")}, mappedName = "Queue01")
+@MessageDriven(activationConfig = { @ActivationConfigProperty(propertyName = "destination", propertyValue = "Queue01"),
+		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue") }, mappedName = "Queue01")
 
 @Stateless(name = "AnnuaireEJB", mappedName = "AnnuaireImpl")
 public class GestionnaireDefiImpl implements GestionnaireDefi, MessageListener {
 
 	@Inject
 	JMSContext jmsContext;
-	
-	@Resource (mappedName = "Queue02")
+
+	@Resource(mappedName = "Queue02")
 	Queue queue02; // vers client1
-	@Resource (mappedName = "Queue03")
+	@Resource(mappedName = "Queue03")
 	Queue queue03; // vers client2
-	
+
 	@Override
 	public void onMessage(Message message) {
-		if (message instanceof ObjectMessage){
+		if (message instanceof ObjectMessage) {
 			ObjectMessage om = ((ObjectMessage) message);
 			try {
 				Class<?> c = om.getObject().getClass();
-				if (c == Defi.class){
+				if (c == Defi.class) {
 					System.out.println("tada - defi");
 					// determiner la queue d'entree
 					Defi object = (Defi) om.getBody(c);
-					if (object.cote == 1){
+					if (object.cote == 1) {
 						// on envoi au client2
 						object.cote = 11;
 						jmsContext.createProducer().send(queue03, object);
 						System.out.println("defi envoye a 2");
 						if (object.response && object.positive)
 							System.out.println("defi accepte par 2");
+
 						else if (object.response && !object.positive)
 							System.out.println("defi refuse par 2");
-					}
-					else if (object.cote == 2){
+
+					} else if (object.cote == 2) {
 						// on envoi au client1
 						object.cote = 22;
 						jmsContext.createProducer().send(queue02, object);
@@ -66,11 +66,30 @@ public class GestionnaireDefiImpl implements GestionnaireDefi, MessageListener {
 							System.out.println("defi refuse par 1");
 					}
 				}
+				// resultat
+				else if (c == Resultat.class) {
+					System.out.println("tada - Resultat");
+					// determiner la queue d'entree
+					Resultat object = (Resultat) om.getBody(c);
+					if (object.cote == 1) {
+						// on envoi au client2
+						object.cote = 11;
+						jmsContext.createProducer().send(queue03, object);
+						System.out.println("Resultat envoye a 2");
+						System.out.println(object);
+
+					} else if (object.cote == 2) {
+						// on envoi au client1
+						object.cote = 22;
+						jmsContext.createProducer().send(queue02, object);
+						System.out.println("Resultat envoye a 1");
+
+					}
+				}
 			} catch (JMSException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
-
 }
